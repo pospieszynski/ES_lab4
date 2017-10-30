@@ -1,4 +1,2 @@
 #!/bin/bash
-make clean
-make 
-arm-elf-gdb gdbu.elf
+make clean && make && arm-elf-gdb dbgu.elf
