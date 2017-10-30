@@ -1,20 +1,26 @@
 void dbgu_print_ascii(const char *buffer) {}
 
 #include "DBGU.h"
-
-void printAlphabet() {
- int letter = 'a';
- sendCharacter('P');
- while( letter <= (int)'Z' ) {
-   sendCharacter('K');
-   sendCharacter((char)letter);
-   (int)letter++;
- }
-}
+#define TASK_1 0
+#define TASK_2 1
+#define TASK_3 0
 
 int main() {
   if( initialize(8, 1, 0) == 0 ) {
-    printAlphabet();
+    #if TASK_1
+      printAlphabet();
+    #endif
+      
+    #if TASK_2
+      printBuffer("\n\rHello world!\r\n");
+    #endif
+      
+    #if TASK_2
+      while(1) {
+	reverseString();
+      }
+    #endif
+      
   }
   while(1){} 
 }

@@ -7,11 +7,14 @@ int initialize( int bits_no,  int stop_bits,  int has_parity_bit) {
 	}
 	disableInterrupts();
 	resetTransmitter();
+	turnTransmitterOff();
 	resetReceiver();
+	turnReceiverOff();
 	configureBaudRate();
-	turnTransmitterOn();
 	configure8N1();
 	configurePIO();
+	turnReceiverOn();
+	turnTransmitterOn();
 	return 0;
 }
 
@@ -38,8 +41,24 @@ void resetReceiver() {
 	AT91C_BASE_DBGU->DBGU_CR=AT91C_US_RSTRX;
 }
 
+void turnReceiverOff() {
+  AT91C_BASE_DBGU->DBGU_CR = AT91C_US_RXDIS;
+}
+
+void turnTransmitterOff() {
+ AT91C_BASE_DBGU->DBGU_CR = AT91C_US_TXDIS; 
+}
+
 void turnTransmitterOn() {
 	AT91C_BASE_DBGU->DBGU_CR = AT91C_US_TXEN;
+}
+
+int checkIfReceiverReady() {
+  return (AT91C_BASE_DBGU->DBGU_CSR & AT91C_US_RXRDY); 
+}
+
+int checkIfTransmitterReady() {
+  return (!(AT91C_BASE_DBGU->DBGU_CSR & AT91C_US_TXRDY));
 }
 
 void turnReceiverOn() {
@@ -56,17 +75,45 @@ void configure8N1() {
 }
 
 void printAlphabet() {
- int letter = 'a';
- sendCharacter('P');
- while( letter <= (int)'Z' ) {
-   sendCharacter('K');
+ int letter = 'A';
+ while( letter <= 'Z' ) {
    sendCharacter((char)letter);
-   (int)letter++;
+   letter++;
+ }
+ 
+ letter = 'A';
+ while( letter <= 'Z' ) {
+   sendCharacter((char)letter + CHARACTERS_OFFSET);
+   letter++;
  }
 }
 
+void printBuffer(char *string) {
+ 
+  while(*string != '\0') {
+    sendCharacter(*string);
+    string++;
+  }
+}
+
+char readCharacter() {
+ while(checkIfReceiverReady()){}
+ return AT91C_BASE_DBGU->DBGU_RHR;
+}
+
+void reverseString() {
+ char letter = readCharacter();
+ if(letter >= 'a' && letter <= 'z') {
+  letter -= CHARACTERS_OFFSET;
+ } else if(letter >= 'A' && letter <= 'Z') {
+  letter += CHARACTERS_OFFSET; 
+ }
+ sendCharacter(letter);
+}
+
 void sendCharacter(char letter) {
-  AT91C_BASE_DBGU->DBGU_THR = (unsigned int)letter;
+  while(!(AT91C_BASE_DBGU->DBGU_CSR & AT91C_US_TXRDY)) {}
+    AT91C_BASE_DBGU->DBGU_THR = (unsigned int)letter;
 }
 
 void configurePIO() {

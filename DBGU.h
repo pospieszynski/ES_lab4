@@ -5,7 +5,13 @@
 #define CHARACTERS_OFFSET 32
 
 int initialize( int bits_no,  int stop_bits,  int has_parity_bit);
-//void printAlphabet();
+void printAlphabet();
+void reverseString();
+char readCharacter();
+void turnReceiverOff();
+void turnTransmitterOff();
+int checkIfReceiverReady();
+int checkIfTransmitterReady();
 void configurePIO();
 void disableInterrupts();
 void resetTransmitter();
