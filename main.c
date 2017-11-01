@@ -6,21 +6,21 @@ void dbgu_print_ascii(const char *buffer) {}
 #define TASK_3 1
 
 int main() {
-  if( initialize(8, 1, 0) == 0 ) {
+  if( initializeDGBU() == 0 ) {
     #if TASK_1
       printAlphabet();
     #endif
       
     #if TASK_2
-      printBuffer("\n\rHello world!\r\n");
+      printString("\n\rHello world!\r\n");
     #endif
       
     #if TASK_3
       while(1) {
-	reverseString();
+	     reverseString();
       }
     #endif
       
   }
-  while(1){} 
+  while(1);
 }

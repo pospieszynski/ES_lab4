@@ -1,17 +1,14 @@
 #include "AT91SAM9263.h"
 #include "DBGU.h"
 
-int initialize( int bits_no,  int stop_bits,  int has_parity_bit) {
-	if(bits_no != 8 || stop_bits != 1 || has_parity_bit != 0) {
-	  return -1;
-	}
+int initializeDGBU() {
 	disableInterrupts();
 	resetTransmitter();
 	turnTransmitterOff();
 	resetReceiver();
 	turnReceiverOff();
 	configureBaudRate();
-	configure8N1();
+	configureMode();
 	configurePIO();
 	turnReceiverOn();
 	turnTransmitterOn();
@@ -58,7 +55,7 @@ int checkIfReceiverReady() {
 }
 
 int checkIfTransmitterReady() {
-  return (!(AT91C_BASE_DBGU->DBGU_CSR & AT91C_US_TXRDY));
+  return (AT91C_BASE_DBGU->DBGU_CSR & AT91C_US_TXRDY);
 }
 
 void turnReceiverOn() {
@@ -69,18 +66,20 @@ void configureBaudRate() {
 	AT91C_BASE_DBGU->DBGU_BRGR = CD;
 }
 
-void configure8N1() {
+void configureMode() {
 	AT91C_BASE_DBGU->DBGU_MR = AT91C_US_CHMODE_NORMAL;
 	AT91C_BASE_DBGU->DBGU_MR = AT91C_US_PAR_NONE;
 }
 
 void printAlphabet() {
+ // print capital letters
  int letter = 'A';
  while( letter <= 'Z' ) {
    sendCharacter((char)letter);
    letter++;
  }
  
+ //print small letters
  letter = 'A';
  while( letter <= 'Z' ) {
    sendCharacter((char)letter + CHARACTERS_OFFSET);
@@ -88,21 +87,25 @@ void printAlphabet() {
  }
 }
 
-void printBuffer(char *string) {
- 
+int printString(char *string) {
+  int count_letters = 0;
+
   while(*string != '\0') {
     sendCharacter(*string);
+    count_letters++;
     string++;
   }
+  return count_letters;
 }
 
-char readCharacter() {
+void readCharacter(char* character_pointer) {
  while(!checkIfReceiverReady()){}
- return AT91C_BASE_DBGU->DBGU_RHR;
+ *character_pointer = AT91C_BASE_DBGU->DBGU_RHR;
 }
 
 void reverseString() {
- char letter = readCharacter();
+ char letter;
+ readCharacter(&letter);
  if(letter >= 'a' && letter <= 'z') {
   letter -= CHARACTERS_OFFSET;
  } else if(letter >= 'A' && letter <= 'Z') {
@@ -112,8 +115,8 @@ void reverseString() {
 }
 
 void sendCharacter(char letter) {
-  while(!(AT91C_BASE_DBGU->DBGU_CSR & AT91C_US_TXRDY)) {}
-    AT91C_BASE_DBGU->DBGU_THR = (unsigned int)letter;
+  while(!checkIfTransmitterReady()) {}
+  AT91C_BASE_DBGU->DBGU_THR = (unsigned int)letter;
 }
 
 void configurePIO() {

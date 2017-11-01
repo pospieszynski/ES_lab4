@@ -1,17 +1,8 @@
 #include "AT91SAM9263.h"
-#define MASTERCLOCK 100000000
-#define BAUDRATE 115200
 #define CD 54
 #define CHARACTERS_OFFSET 32
 
-int initialize( int bits_no,  int stop_bits,  int has_parity_bit);
-void printAlphabet();
-void reverseString();
-char readCharacter();
-void turnReceiverOff();
-void turnTransmitterOff();
-int checkIfReceiverReady();
-int checkIfTransmitterReady();
+int initializeDGBU();
 void configurePIO();
 void disableInterrupts();
 void resetTransmitter();
@@ -19,6 +10,15 @@ void resetReceiver();
 void turnTransmitterOn();
 void turnReceiverOn();
 void configureBaudRate();
-void configure8N1();
+void configureMode();
 void configurePIO();
+void turnReceiverOff();
+void turnTransmitterOff();
+
+void printAlphabet();
+int printString(char *string);
+void reverseString();
+void readCharacter(char* character_pointer);
+int checkIfReceiverReady();
+int checkIfTransmitterReady();
 void sendCharacter(char);
