@@ -72,14 +72,14 @@ void configureMode() {
 }
 
 void printAlphabet() {
- // print capital letters
+ // capital letters
  int letter = 'A';
  while( letter <= 'Z' ) {
    sendCharacter((char)letter);
    letter++;
  }
  
- //print small letters
+ // small letters
  letter = 'A';
  while( letter <= 'Z' ) {
    sendCharacter((char)letter + CHARACTERS_OFFSET);
@@ -103,7 +103,7 @@ void readCharacter(char* character_pointer) {
  *character_pointer = AT91C_BASE_DBGU->DBGU_RHR;
 }
 
-void reverseString() {
+void reverseLetterCase() {
  char letter;
  readCharacter(&letter);
  if(letter >= 'a' && letter <= 'z') {

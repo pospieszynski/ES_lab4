@@ -17,7 +17,7 @@ void turnTransmitterOff();
 
 void printAlphabet();
 int printString(char *string);
-void reverseString();
+void reverseLetterCase();
 void readCharacter(char* character_pointer);
 int checkIfReceiverReady();
 int checkIfTransmitterReady();

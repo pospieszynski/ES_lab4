@@ -17,7 +17,7 @@ int main() {
       
     #if TASK_3
       while(1) {
-	     reverseString();
+	     reverseLetterCase();
       }
     #endif
       
