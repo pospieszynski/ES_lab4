@@ -1,5 +1,5 @@
 #include "AT91SAM9263.h"
-#define CD 54
+#define CLOCK_DIVISOR 54
 #define CHARACTERS_OFFSET 32
 
 int initializeDGBU();

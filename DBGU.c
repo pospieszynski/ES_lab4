@@ -63,7 +63,7 @@ void turnReceiverOn() {
 }
 
 void configureBaudRate() {
-	AT91C_BASE_DBGU->DBGU_BRGR = CD;
+	AT91C_BASE_DBGU->DBGU_BRGR = CLOCK_DIVISOR;
 }
 
 void configureMode() {
@@ -80,9 +80,9 @@ void printAlphabet() {
  }
  
  // small letters
- letter = 'A';
- while( letter <= 'Z' ) {
-   sendCharacter((char)letter + CHARACTERS_OFFSET);
+ letter = 'a';
+ while( letter <= 'z' ) {
+   sendCharacter((char)letter);
    letter++;
  }
 }
@@ -99,13 +99,14 @@ int printString(char *string) {
 }
 
 void readCharacter(char* character_pointer) {
- while(!checkIfReceiverReady()){}
+ while(!checkIfReceiverReady());
  *character_pointer = AT91C_BASE_DBGU->DBGU_RHR;
 }
 
 void reverseLetterCase() {
  char letter;
  readCharacter(&letter);
+ 
  if(letter >= 'a' && letter <= 'z') {
   letter -= CHARACTERS_OFFSET;
  } else if(letter >= 'A' && letter <= 'Z') {
@@ -115,7 +116,7 @@ void reverseLetterCase() {
 }
 
 void sendCharacter(char letter) {
-  while(!checkIfTransmitterReady()) {}
+  while(!checkIfTransmitterReady());
   AT91C_BASE_DBGU->DBGU_THR = (unsigned int)letter;
 }
 
